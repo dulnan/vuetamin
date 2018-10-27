@@ -1,1 +1,1 @@
-export const PROPERTY = 'loop'
+export const PROPERTY = 'vuetamin'

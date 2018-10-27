@@ -44,7 +44,7 @@ export default class Vuetamin {
         const uid = component._uid
 
         const functionName = action === 'add' ? 'addHandler' : 'removeHandler'
-        this.threads[functionName](thread, uid, method, component)
+        this.threads[functionName](thread, uid, method, methodName, component)
       })
     })
   }

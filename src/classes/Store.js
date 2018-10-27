@@ -1,6 +1,5 @@
 /**
- * The Vuetamin store manages the state and provides ways
- * to mutate the state.
+ * Vuetamin manages the state and provides ways to mutate the state.
  */
 export default class Store {
   /**

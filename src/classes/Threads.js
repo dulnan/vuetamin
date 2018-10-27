@@ -10,17 +10,17 @@ export default class Threads {
     this.queue = {}
   }
 
-  addHandler (threadName, uid, method, context) {
+  addHandler (threadName, uid, method, methodName, context) {
     if (!this.threads[threadName]) {
       this.threads[threadName] = new Thread(threadName)
     }
 
-    this.threads[threadName].add(method, uid, context)
+    this.threads[threadName].add(method, methodName, uid, context)
     this.trigger(threadName)
   }
 
-  removeHandler (threadName, uid) {
-    this.threads[threadName].remove(uid)
+  removeHandler (threadName, uid, method, methodName) {
+    this.threads[threadName].remove(uid, methodName)
   }
 
   trigger (thread) {
@@ -28,10 +28,11 @@ export default class Threads {
   }
 
   step (state, cb) {
+    let history = {}
     Object.keys(this.threads).forEach(thread => {
       if (this.queue[thread] === true) {
         this.queue[thread] = false
-        this.threads[thread].run(state)
+        history = this.threads[thread].run(state, history)
       }
     })
 

@@ -19,8 +19,8 @@ export default class Thread {
    * @param {String} uid The uid of the Vue component.
    * @param {Object} context The context of the Vue component.
    */
-  add (method, uid, context) {
-    const key = buildKey(uid, this.name)
+  add (method, methodName, uid, context) {
+    const key = buildKey(uid, methodName)
 
     this.handlers.push({
       key: key,
@@ -35,8 +35,8 @@ export default class Thread {
    * @param {Handler} handler The handler to be removed.
    * @param {String} uid The uid of the Vue component.
    */
-  remove (uid) {
-    const key = buildKey(uid, this.name)
+  remove (uid, methodName) {
+    const key = buildKey(uid, methodName)
 
     for (let i = 0; i < this.handlers.length; i++) {
       if (this.handlers[i] !== null && this.handlers[i].key === key) {
@@ -49,10 +49,13 @@ export default class Thread {
    * Run all handlers in this thread.
    *
    * @param {Object} state The state object to be provided for all handlers.
+   * @param {Object} history It's properties are the keys of all handlers already run.
+   * 
+   * @returns {Object} The altered history object.
    */
-  run (state) {
+  run (state, history) {
     // Store the already called handlers.
-    let currentRun = {}
+    let currentRun = history
 
     // Loop over all handlers and run them. Also make sure they are
     // not called multiple times.
@@ -65,5 +68,7 @@ export default class Thread {
         }
       }
     }
+
+    return currentRun
   }
 }
