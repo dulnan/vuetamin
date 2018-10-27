@@ -1,25 +1,24 @@
-import Loop from './classes/Loop'
+import Vuetamin from './classes/Vuetamin'
+import { hasVuetaminOptions } from './utils'
 
-import { PROPERTY } from './settings'
-
+/**
+ * Install the Vuetamin plugin in the global scope and add
+ * the hooks in the components to add or remove themselves.
+ */
 export default {
-  install (Vue, options) {
-    Vue.prototype.$loop = new Loop(options.data(), options.state, options.mutations, options.actions)
+  install (Vue, { store = {}, options = {}} = {}) {
+    Vue.prototype.$vuetamin = new Vuetamin(store)
 
     Vue.mixin({
       mounted: function () {
-        let definitions = this.$options['loop']
-
-        if (definitions && typeof definitions === 'object') {
-          this.$loop.addComponent(this)
+        if (hasVuetaminOptions(this.$options)) {
+          this.$vuetamin.addComponent(this)
         }
       },
 
       beforeDestroy: function () {
-        let definitions = this.$options[PROPERTY]
-
-        if (definitions && typeof definitions === 'object') {
-          this.$loop.removeComponent(this)
+        if (hasVuetaminOptions(this.$options)) {
+          this.$vuetamin.removeComponent(this)
         }
       }
     })

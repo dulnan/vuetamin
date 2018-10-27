@@ -1,12 +1,16 @@
 import Thread from './Thread'
 
+/**
+ * Manages threads, handles adding and removing them.
+ * Keeps track of the queue and tracks them.
+ */
 export default class Threads {
   constructor () {
     this.threads = {}
     this.queue = {}
   }
 
-  addHandler (method, threadName, uid, context) {
+  addHandler (threadName, uid, method, context) {
     if (!this.threads[threadName]) {
       this.threads[threadName] = new Thread(threadName)
     }
@@ -15,7 +19,7 @@ export default class Threads {
     this.trigger(threadName)
   }
 
-  removeHandler (method, threadName, uid) {
+  removeHandler (threadName, uid) {
     this.threads[threadName].remove(uid)
   }
 
