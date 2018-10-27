@@ -2,9 +2,16 @@
 
 **THIS IS A PROOF OF CONCEPT**
 Though I am using this in one of my Vue projects, this Vue plugin is nothing more
-than an experiment, is not tested thoroughly and might change any time.
+than an experiment, it's not tested thoroughly and might change any time. I plan
+to put it in a state where it's safe to use it.
 
-## Idea
+# Features
+* Central state management
+* Run methods from multiple components in a single requestAnimationFrame loop
+* For every rAF loop all methods will receive the exact same data
+* Prevent unnecessary redraws
+
+# Use case
 There are several ways to share data among multiple components. Using only Vue,
 a parent component can act as the "source" and pass down data via props. Or any
 component can send data as events and others listen and then do something with
@@ -13,7 +20,6 @@ But the most obvious solution is a centralized store, like vuex. This works well
 for most cases, but you'll run into performance issues as soon as you work with
 animations, real-time data or otherwise constantly changing data.
 
-### Example use case
 Let's say we want to build an app that displays data coming from a WebRTC
 connection. There are three components that visualize the data and two components
 that do some calculations and display it as text.
@@ -25,9 +31,11 @@ an animation loop for every component.
 The same problem appears when just passing down data from a common parent
 component or using events.
 
-### Problems
-* Multiple animation loops means it will be out of sync
-* 
+* Multiple animation loops will be out of sync
+* It can be tricky to prevent unnecessary redraws
+* The structure can get quite messy since it's not clear where data is coming from
+* To mitigate performance issues you might consider debouncing events, which
+  introduces lag
 
 # Usage
 Install Vuetamin from npm.
@@ -49,11 +57,11 @@ new Vue({
 }).$mount('#app')
 ```
 
-The store/index.js file should look like this:
+The store.js file should look something like this.
 
 ```javascript
 /**
- * Optional. Store mutation and action names as an object to share them
+ * Optional. Put mutation and action names as an object to share them
  * across multiple files.
  */
 export const threads = {
@@ -68,7 +76,8 @@ export const store = {
   /**
    * This is where all data is stored. It must be a function returning
    * a single object. You can set the initial values directly or run
-   * additional code beforehand.
+   * additional code beforehand. This will only be called when Vuetamin
+   * is instanciating its store.
    */
   data: function () {
     const viewport = {
@@ -89,9 +98,9 @@ export const store = {
 
   /**
    * The state function is called before every animation loop. Its return
-   * value is passed to all animation handlers.
-   * The function receives the data as an argument. Though it's possible
-   * to mutate values in data, this is probably a bad idea.
+   * value is passed to all methods in the queue.
+   * The state function receives the store data as an argument. Though it's
+   * possible to mutate values in data, it's a bad idea.
    * 
    * You can do additional calculations here based on the data.
    * The function can return anything from a single value, to an object or
@@ -109,9 +118,9 @@ export const store = {
    * Mutations change a single value. In the first parameter you have access
    * to the context, consisting of { data, trigger, mutate, action }.
    * 
-   * It's possible to call another mutations or action from here, but for
+   * It's possible to call another mutation or action from here, but for
    * that it's probably a better idea to write an action that calls one
-   * or multiple mutations.
+   * or multiple mutations and insted call this action from somewhere.
    * 
    * The second argument is whatever has been passed to the mutation.
    * 
@@ -136,7 +145,7 @@ export const store = {
   },
 
   /**
-   * Actions don't differ from mutations much. They als get the same context
+   * Actions don't differ from mutations much. They also get the same context
    * and it's possible to pass a value/payload to an action.
    * 
    * They are meant to be used when multiple mutations need to be called or
