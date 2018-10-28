@@ -27,15 +27,17 @@ export default class Threads {
     this.queue[thread] = true
   }
 
-  step (state, cb) {
-    let history = {}
-    Object.keys(this.threads).forEach(thread => {
-      if (this.queue[thread] === true) {
-        this.queue[thread] = false
-        history = this.threads[thread].run(state, history)
-      }
-    })
+  step (state) {
+    return new Promise((resolve, reject) => {
+      let history = {}
+      Object.keys(this.threads).forEach(thread => {
+        if (this.queue[thread] === true) {
+          this.queue[thread] = false
+          history = this.threads[thread].run(state, history)
+        }
+      })
 
-    cb()
+      resolve()
+    })
   }
 }

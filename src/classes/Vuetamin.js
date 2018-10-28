@@ -11,19 +11,19 @@ export default class Vuetamin {
     this.threads = new Threads()
     this.store = new Store(store, this.trigger.bind(this))
 
-    this.loop()
+    this._loop()
   }
 
   /**
    * Main requestAnimationFrame loop. Calls the step function
    * of the threads and passes the current state.
    */
-  loop () {
+  async _loop () {
     const state = this.store.getState()
 
-    this.threads.step(state, () => {
-      window.requestAnimationFrame(() => this.loop())
-    })
+    await this.threads.step(state)
+    
+    window.requestAnimationFrame(this._loop.bind(this))
   }
 
   /**
@@ -33,7 +33,7 @@ export default class Vuetamin {
    * @param {Vue} component A Vue component
    * @param {String} action The action to do (add or remove)
    */
-  forComponent (component, action) {
+  _forComponent (component, action) {
     const definitions = component.$options[PROPERTY]
 
     Object.keys(definitions).forEach(methodName => {
@@ -64,7 +64,7 @@ export default class Vuetamin {
    * @param {Vue} component A Vue component.
    */
   addComponent (component) {
-    this.forComponent(component, 'add')
+    this._forComponent(component, 'add')
   }
 
   /**
@@ -73,6 +73,6 @@ export default class Vuetamin {
    * @param {Vue} component A Vue component.
    */
   removeComponent (component) {
-    this.forComponent(component, 'remove')
+    this._forComponent(component, 'remove')
   }
 }
