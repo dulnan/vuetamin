@@ -4,7 +4,9 @@ import Store from './Store'
 import { PROPERTY } from '../settings/index'
 
 /**
- * The Vuetamin class handles the store
+ * The Vuetamin class handles both the threads and the store.
+ * It runs the main requestAnimationFrame loop and manages
+ * adding and removing Vue component's handlers.
  */
 export default class Vuetamin {
   constructor (store) {
@@ -29,15 +31,35 @@ export default class Vuetamin {
   /**
    * Loop over the defined handlers from a Vue component and for every
    * thread either remove or add the handler.
+   *
+   * The function expects the following structure on a component:
+   *  
+   * vuetamin: {
+   *   methodName1: ['thread1', 'thread2'],
+   *   methodName2: ['thread1', 'thread4']
+   * }
    * 
-   * @param {Vue} component A Vue component
+   * @param {VueComponent} component A Vue component
    * @param {String} action The action to do (add or remove)
    */
   _forComponent (component, action) {
     const definitions = component.$options[PROPERTY]
 
     Object.keys(definitions).forEach(methodName => {
-      const threads = definitions[methodName]
+      // Get the threads of the handler.
+      const threads = (() => {
+        const val = definitions[methodName]
+
+        // If it's an array, return that.
+        // Strings are allowed, so return the string as an array.
+        if (Array.isArray(val)) {
+          return val
+        } else if (typeof val === 'string') {
+          return [val]
+        } else {
+          throw new Error('Invalid thread definition in ' + component.$vnode.tag)
+        }
+      })()
 
       threads.forEach(thread => {
         const method = component[methodName]
@@ -61,7 +83,7 @@ export default class Vuetamin {
   /**
    * Add a Vue component to the desired threads.
    *
-   * @param {Vue} component A Vue component.
+   * @param {VueComponent} component A Vue component.
    */
   addComponent (component) {
     this._forComponent(component, 'add')
@@ -70,7 +92,7 @@ export default class Vuetamin {
   /**
    * Remove a vue component from all registered threads.
    *
-   * @param {Vue} component A Vue component.
+   * @param {VueComponent} component A Vue component.
    */
   removeComponent (component) {
     this._forComponent(component, 'remove')

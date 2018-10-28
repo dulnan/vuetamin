@@ -7,16 +7,16 @@ than an experiment, it's not tested thoroughly and might change any time. I plan
 to put it in a state where it's safe to use it.
 
 ## Features
-* Central state management
 * Run methods from multiple components in a single requestAnimationFrame loop
-* For every rAF loop all methods will receive the exact same data
+* Central state management
+* For every rAF loop all methods will receive the exact same state
 * Prevent unnecessary redraws
 
 ## Concepts
 ### Basic
 Instead of making assumptions about your state, Vuetamin does not do anything by
 itself. It offers mutations, which similiar to vuex provide a structure to change
-data. It does not observe changes. It's your task to trigger changes.
+data. It does not observe changes. It's your task to queue up what needs to be run.
 
 ### Manual
 To do something with the Vuetamin data in your components, you need to specify
@@ -30,7 +30,7 @@ A method can subscribe to multiple threads. Vuetamin will make sure that for eve
 loop a method is only called once.
 
 ## Why not...?
-There are several ways to share data among multiple components. And for most cases
+There are several ways to share data across multiple components. And for most cases
 they are more than enough and perform very well.
 
 ### Vuex
@@ -49,7 +49,7 @@ for certain events and then redraw or rerender.
 The problem with this is that you would still need an animation loop in every
 component and then "buffer" the incoming data via the components own reactive data.
 
-* Multiple animation loops will be out of sync
+* Multiple animation loops can be out of sync
 * It can be tricky to prevent unnecessary redraws
 * The structure can get quite messy since it's not clear where data is coming from
 * To mitigate performance issues you might consider debouncing events, which
@@ -121,9 +121,12 @@ export const store = {
    * The state function receives the store data as an argument. Though it's
    * possible to mutate values in data, it's a bad idea.
    * 
-   * You can do additional calculations here based on the data.
+   * You can do additional calculations here based on the data. Keep in mind
+   * that this function will be called for every loop, so it's a good idea to
+   * move expensive calculations to data and calculate them once inside a
+   * mutation.
    * The function can return anything from a single value, to an object or
-   * an array.
+   * an array. Technically even a function..?
    */
   state: function (data) {
     return {
@@ -168,7 +171,8 @@ export const store = {
    * and it's possible to pass a value/payload to an action.
    * 
    * They are meant to be used when multiple mutations need to be called or
-   * when the function otherwise behaves a bit differently.
+   * when the function otherwise behaves a bit differently, like doing things
+   * outside of the store.
    * 
    * In this example, the redrawAll action is being used to trigger all threads
    * once, after some time has passed. Here this is used to not immediately redraw
@@ -187,7 +191,10 @@ export const store = {
 }
 ```
 
-Now you're ready to use Vuetamin in any component you like.
+Now you're ready to use Vuetamin in any component you like. Here is an example
+of a component which displays the current {x,y} position on a canvas.
+It also stores a variable from the Vuetamin store in the local data of the
+component, which is then used in a computed property.
 
 ```html
 <template>
@@ -200,33 +207,16 @@ import { threads } from '@/store'
 
 export default {
   /**
-   * You can locally store values from Vuetamin in your component,
-   * but it will be a manual task.
-   */
-  data () {
-    return {
-      background: '#FFFFFF'
-    }
-  },
-
-  computed: {
-    canvasStyle () {
-      return {
-        backgroundColor: this.background
-      }
-    }
-  },
-
-  /**
    * Using the vuetamin property you can attach methods that will
    * be called for when the specified thread is triggered.
    * 
    * It has to be an object, with its properties being the name of
-   * the method and the value an array of thread names.
+   * the method and the value an array of thread names. You can also pass a
+   * string if you only need a single thread.
    */
   vuetamin: {
     drawCursor: [threads.POSITION],
-    drawBackground: [threads.COLOR]
+    drawBackground: threads.COLOR
   },
 
   /**
@@ -256,11 +246,55 @@ export default {
       this.background = state.color
     }
   }
+  /**
+   * You can locally store values from Vuetamin in your component, to use them
+   * in templates, computed properties, etc.
+   */
+  data () {
+    return {
+      background: '#FFFFFF'
+    }
+  },
+
+  computed: {
+    canvasStyle () {
+      return {
+        backgroundColor: this.background
+      }
+    }
+  }
 }
 ```
 
-To mutate data, you can use the global `this.$vuetamin`.
+# API
+To interact with Vuetamin in your app, you can use the global `this.$vuetamin`.
 
+## mutation
 ```javascript
 this.$vuetamin.store.mutate('updateColor', color)
 ```
+
+## Get data and state
+You also have access to the store data and state:
+
+```javascript
+this.$vuetamin.store.getData()
+this.$vuetamin.store.getState()
+```
+
+## Trigger a thread
+Just like in a mutation, you can also trigger a thread from within your app:
+```javascript
+this.$vuetamin.trigger('color_changed')
+```
+
+## Add or remove component
+It's possible to manually add or remove a component. Just call the following
+functions and pass the component:
+
+```javascript
+this.$vuetamin.addComponent(this)
+this.$vuetamin.removeComponent(this)
+```
+
+

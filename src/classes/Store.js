@@ -12,6 +12,8 @@ export default class Store {
     this.actions = this.buildFromProperties(actions)
 
     this._getState = state
+
+    // Store the context which will be passed to mutation and action methods.
     this._context = {
       data: this.data,
       trigger: triggerFn,
@@ -28,6 +30,15 @@ export default class Store {
    */
   getState () {
     return this._getState(this.data)
+  }
+
+  /**
+   * Returns the store data.
+   * 
+   * @returns {Object}
+   */
+  getData () {
+    return this.data
   }
 
   /**
