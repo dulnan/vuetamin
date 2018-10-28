@@ -1,6 +1,4 @@
-const buildKey = (uid, name) => {
-  return `vue_${uid}_${name}`
-}
+import { buildKey } from './../utils'
 
 /**
  * A single thread. It stores all handlers for the given thread and provides
