@@ -31,26 +31,18 @@ loop a method is only called once.
 
 ## Why not...?
 There are several ways to share data across multiple components. And for most cases
-they are more than enough and perform very well.
+they are more than enough and perform very well. Using vuex would work, or just
+plain Vue and passing data to components via props.
 
-### Vuex
-The obvious solution would be to just use a general purpose state management, like
-vuex. The problem here is that, when working with data that changes a lot, issuing
-mutations, working with getters, computed properties and watchers, the performance
-of the app can take quite a deep dive.
-
-### Just Vue
-A common parent component could pass down data via props. This would already be
-an improvement to using vuex, but the issues mentioned remain.
-
-### Event Bus
 Sharing data via events also seems like a good idea. Components would listen
 for certain events and then redraw or rerender.
-The problem with this is that you would still need an animation loop in every
-component and then "buffer" the incoming data via the components own reactive data.
+
+The problem with all these options is that you would still need an animation loop in
+every component and then "buffer" the incoming data via the components own reactive
+data.
 
 * Multiple animation loops can be out of sync
-* It can be tricky to prevent unnecessary redraws
+* It can be tricky and complex to prevent unnecessary redraws
 * The structure can get quite messy since it's not clear where data is coming from
 * To mitigate performance issues you might consider debouncing events, which
   introduces a lag
@@ -131,8 +123,8 @@ export const store = {
   state: function (data) {
     return {
       color: data.color,
-      position: data.mousePosition,
-      isLeft: data.mousePosition.x < (data.viewport.width / 2)
+      position: data.position,
+      isLeft: data.position.x < (data.viewport.width / 2)
     }
   },
 
