@@ -65,7 +65,7 @@ Install the plugin in your Vue app.
 ```javascript
 import Vue from 'vue'
 import App from './App.vue'
-import Vuetamin from 'vue-tamin'
+import Vuetamin from 'vuetamin'
 import { store } from './store'
 
 Vue.use(Vuetamin, { store })
