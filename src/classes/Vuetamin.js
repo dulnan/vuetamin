@@ -20,10 +20,10 @@ export default class Vuetamin {
    * Main requestAnimationFrame loop. Calls the step function
    * of the threads and passes the current state.
    */
-  async _loop () {
+  _loop () {
     const state = this.store.getState()
 
-    await this.threads.step(state)
+    this.threads.step(state)
     
     window.requestAnimationFrame(this._loop.bind(this))
   }

@@ -56,17 +56,13 @@ export default class Threads {
    * @param {Object} state The Vuetamin state.
    */
   step (state) {
-    return new Promise((resolve) => {
-      let history = {}
+    let history = {}
 
-      Object.keys(this.threads).forEach(thread => {
-        if (this.queue[thread]) {
-          this.queue[thread] = false
-          history = this.threads[thread].run(state, history)
-        }
-      })
-
-      resolve()
+    Object.keys(this.threads).forEach(thread => {
+      if (this.queue[thread]) {
+        this.queue[thread] = false
+        history = this.threads[thread].run(state, history)
+      }
     })
   }
 }
