@@ -1,16 +1,16 @@
-# vuetamin - Central animation loop and state management
+# vuetamin
+### Central animation loop and state management
+#### » Run methods from multiple components in a single requestAnimationFrame loop
+#### » Central state management
+#### » For every rAF loop all methods will receive the exact same state
+#### » Prevent unnecessary redraws
+
 
 **THIS IS A PROOF OF CONCEPT**
 
 Although I am using this in one of my Vue projects, this Vue plugin is nothing
 more than an experiment, it's not tested thoroughly and might change any time. I
 do plan however to get this in a state where it's safe to use and well tested.
-
-## Features
-* Run methods from multiple components in a single requestAnimationFrame loop
-* Central state management
-* For every rAF loop all methods will receive the exact same state
-* Prevent unnecessary redraws
 
 ## Concepts
 ### Basic
