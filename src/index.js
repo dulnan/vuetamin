@@ -5,7 +5,8 @@ import { hasVuetaminOptions } from './utils'
  * Install the Vuetamin plugin in the global scope and add
  * the hooks in the components to add or remove themselves.
  */
-export default {
+const plugin = {
+  // eslint-disable-next-line no-unused-vars
   install (Vue, { store = {}, options = {}} = {}) {
     Vue.prototype.$vuetamin = new Vuetamin(store)
 
@@ -24,3 +25,5 @@ export default {
     })
   }
 }
+
+export default plugin

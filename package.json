@@ -1,8 +1,9 @@
 {
   "name": "vuetamin",
-  "version": "0.0.2",
-  "description": "",
-  "main": "lib/index.js",
+  "version": "0.0.3",
+  "description": "Central animation loop and state management",
+  "author": "Jan Hug <me@dulnan.net>",
+  "license": "MIT",
   "keywords": [
     "vue",
     "animation",
@@ -10,26 +11,61 @@
     "frame",
     "loop",
     "queue",
-    "performance"
+    "performance",
+    "vue plugin"
   ],
-  "repository": "https://github.com/dulnan/vuetamin",
-  "directories": {
-    "lib": "lib"
-  },
+  "files": [
+    "dist",
+    "src",
+    "LICENSE",
+    "README.md"
+  ],
+  "main": "dist/vuetamin.js",
+  "module": "components/index.js",
   "scripts": {
-    "build": "babel src --presets babel-preset-env --out-dir lib",
-    "test": "mocha --require babel-register --colors",
-    "dev": "echo \"Error: no dev stuff specifried\" && exit 1",
-    "prepublish": "npm run build",
-    "prepare": "npm run build"
+    "build": "run-s build:**",
+    "build:dev": "cross-env NODE_ENV=development rollup -c",
+    "build:prod": "cross-env NODE_ENV=production rollup -c",
+    "test": "cross-env LC_ALL=C karma start"
   },
-  "author": "Jan Hug <me@dulnan.net>",
-  "license": "MIT",
+  "peerDependencies": {
+    "vue": "^2.4.4"
+  },
   "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-preset-env": "^1.7.0",
-    "babel-register": "^6.26.0",
+    "babel-core": "^6.26.0",
+    "babel-plugin-external-helpers": "^6.22.0",
+    "babel-preset-env": "^1.6.0",
+    "babel-eslint": "^8.0.0",
+    "eslint-plugin-html": "^3.2.1",
+    "cross-env": "^5.0.5",
+    "npm-run-all": "^4.1.1",
+    "rollup": "^0.50.0",
+    "rollup-plugin-babel": "^3.0.2",
+    "rollup-plugin-buble": "^0.15.0",
+    "rollup-plugin-commonjs": "^8.2.1",
+    "rollup-plugin-eslint": "^4.0.0",
+    "rollup-plugin-filesize": "^1.4.2",
+    "rollup-plugin-node-resolve": "^3.0.0",
+    "rollup-plugin-uglify": "^2.0.1",
+    "rollup-plugin-vue": "^2.4.2",
+    "rollup-plugin-replace": "^2.0.0",
+    "rollup-plugin-inject": "^2.0.0",
+    "rollup-plugin-includepaths": "^0.2.2",
+    "rollup-plugin-root-import": "^0.2.2",
+    "es6-promise": "^4.1.1",
+    "uglify-es": "^3.0.28",
+    "karma": "^1.7.1",
+    "karma-mocha": "^1.3.0",
+    "karma-chai": "^0.1.0",
+    "karma-mocha-reporter": "^2.2.4",
+    "karma-rollup-preprocessor": "^5.0.1",
+    "karma-chrome-launcher": "^2.2.0",
+    "karma-phantomjs-launcher": "^1.0.4",
+    "karma-phantomjs-shim": "^1.0.4",
+    "karma-coverage": "^1.1.1",
+    "mocha": "^3.5.3",
     "chai": "^4.1.2",
-    "mocha": "^5.2.0"
+    "sinon": "^3.2.1",
+    "vue": "^2.4.4"
   }
 }
