@@ -6,7 +6,7 @@
 #### » Prevent unnecessary redraws
 
 
-**THIS IS A PROOF OF CONCEPT**
+## Important
 
 Although I am using this in one of my Vue projects, this Vue plugin is nothing
 more than an experiment, it's not tested thoroughly and might change any time. I
