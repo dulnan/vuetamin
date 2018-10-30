@@ -75,18 +75,15 @@ new Vue({
 
 ```html
 <head>
-    <link rel="stylesheet" href="https://unpkg.com/vuetamin/dist/vuetamin.min.css">  
-    <script src="https://unpkg.com/vue/dist/vue.min.js"></script>
-    <script src="https://unpkg.com/vuetamin/dist/vuetamin.min.js"></script>
+  <script src="https://unpkg.com/vue/dist/vue.min.js"></script>
+  <script src="https://unpkg.com/vuetamin/dist/vuetamin.min.js"></script>
 </head>
 <body>
-    <div id="app">
-        <my-component></mycomponent>
-    </div>
+  <div id="app"></div>
 
-    <script>
-        new Vue({  el: '#app' })
-    </script>
+  <script>
+    new Vue({  el: '#app' })
+  </script>
 </body>
 ```
 
